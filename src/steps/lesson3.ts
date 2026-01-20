@@ -36,6 +36,8 @@ export function getLesson3Physics(ctx: StepGeneratorContext): TutorialStep {
                     <li>Switch back to the game tab</li>
                 </ol>
 
+                <img src="https://kiro.dev/images/video-game-guide/physics-bug.gif" alt="Physics bug demonstration" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
+
                 <button class="action-btn browser" onclick="openUrl('http://localhost:5173')">
                     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                     Open Game

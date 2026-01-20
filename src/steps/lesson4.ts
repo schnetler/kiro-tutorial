@@ -57,6 +57,8 @@ export function getLesson4Interactions(ctx: StepGeneratorContext): TutorialStep 
             ${ctx.getCollapsibleSection('l4-reproduce', 2, 'Reproduce the Bug', `
                 <p>First, reproduce the bug to understand what's happening:</p>
 
+                <img src="https://kiro.dev/images/video-game-guide/interactions-bug.gif" alt="Interactions bug demonstration" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
+
                 <div class="info-item">
                     <strong>Step 1:</strong> Start a game session
                     <p>Log in and enter the game world.</p>
