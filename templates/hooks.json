@@ -1,0 +1,42 @@
+{
+  "hooks": [
+    {
+      "name": "project-context",
+      "trigger": "onNewConversation",
+      "action": {
+        "type": "injectContext",
+        "content": [
+          {
+            "file": "requirements.md",
+            "section": "all"
+          },
+          {
+            "file": "design.md",
+            "section": "Architecture Overview"
+          }
+        ],
+        "message": "Here's the context for this project. Please keep these requirements and design decisions in mind."
+      }
+    },
+    {
+      "name": "ensure-tests",
+      "trigger": "onFileCreate",
+      "condition": {
+        "filePattern": "src/**/*.{ts,js}",
+        "exclude": "**/*.test.{ts,js}"
+      },
+      "action": {
+        "type": "remind",
+        "message": "Don't forget to create corresponding test file and ensure good coverage!"
+      }
+    },
+    {
+      "name": "task-completion",
+      "trigger": "onCommit",
+      "action": {
+        "type": "remind",
+        "message": "Have you checked off the completed tasks in tasks.md?"
+      }
+    }
+  ]
+}

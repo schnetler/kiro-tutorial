@@ -1,0 +1,219 @@
+{
+  "name": "kiro-tutorial",
+  "displayName": "Kiro Tutorial",
+  "description": "Interactive tutorial for learning Kiro's spec-driven development features",
+  "version": "0.0.1",
+  "publisher": "kiro",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Education"
+  ],
+  "keywords": [
+    "tutorial",
+    "walkthrough",
+    "kiro",
+    "spec-driven",
+    "getting started"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "kiro-tutorial",
+          "title": "Kiro Tutorial",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "kiro-tutorial": [
+        {
+          "type": "webview",
+          "id": "kiro-tutorial.sidebarView",
+          "name": "Learn Kiro"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "kiro-tutorial.start",
+        "title": "Kiro: Open Tutorial Panel"
+      },
+      {
+        "command": "kiro-tutorial.createRequirements",
+        "title": "Kiro: Create requirements.md"
+      },
+      {
+        "command": "kiro-tutorial.createDesign",
+        "title": "Kiro: Create design.md"
+      },
+      {
+        "command": "kiro-tutorial.createTasks",
+        "title": "Kiro: Create tasks.md"
+      },
+      {
+        "command": "kiro-tutorial.createHooks",
+        "title": "Kiro: Create hooks.json"
+      },
+      {
+        "command": "kiro-tutorial.openRequirements",
+        "title": "Kiro: Open requirements.md"
+      },
+      {
+        "command": "kiro-tutorial.openDesign",
+        "title": "Kiro: Open design.md"
+      },
+      {
+        "command": "kiro-tutorial.openTasks",
+        "title": "Kiro: Open tasks.md"
+      },
+      {
+        "command": "kiro-tutorial.createExampleProject",
+        "title": "Kiro: Create Example Project Structure"
+      },
+      {
+        "command": "kiro-tutorial.showWorkflowDiagram",
+        "title": "Kiro: Show Workflow Diagram"
+      },
+      {
+        "command": "kiro-tutorial.startVibeSession",
+        "title": "Kiro Tutorial: Start Vibe Session"
+      },
+      {
+        "command": "kiro-tutorial.startSpecSession",
+        "title": "Kiro Tutorial: Start Spec Session"
+      },
+      {
+        "command": "kiro-tutorial.findKiroCommands",
+        "title": "Kiro Tutorial: Find Kiro Commands (Debug)"
+      },
+      {
+        "command": "kiro-tutorial.startSpecCreation",
+        "title": "Kiro Tutorial: Start Spec Mode Creation"
+      },
+      {
+        "command": "kiro-tutorial.continueToDesign",
+        "title": "Kiro Tutorial: Continue to Design Phase"
+      },
+      {
+        "command": "kiro-tutorial.continueToTasks",
+        "title": "Kiro Tutorial: Continue to Tasks Phase"
+      },
+      {
+        "command": "kiro-tutorial.openRequirementsFile",
+        "title": "Kiro Tutorial: Open requirements.md"
+      },
+      {
+        "command": "kiro-tutorial.openDesignFile",
+        "title": "Kiro Tutorial: Open design.md"
+      },
+      {
+        "command": "kiro-tutorial.openTasksFile",
+        "title": "Kiro Tutorial: Open tasks.md"
+      },
+      {
+        "command": "kiro-tutorial.openSpiritOfKiro",
+        "title": "Kiro Tutorial: Open Spirit of Kiro Tutorial"
+      },
+      {
+        "command": "kiro-tutorial.openSpiritSetup",
+        "title": "Kiro Tutorial: Open Spirit of Kiro Setup"
+      },
+      {
+        "command": "kiro-tutorial.openSteeringDocs",
+        "title": "Kiro Tutorial: Open Steering Documentation"
+      },
+      {
+        "command": "kiro-tutorial.openMCPDocs",
+        "title": "Kiro Tutorial: Open MCP Documentation"
+      },
+      {
+        "command": "kiro-tutorial.openKiroDocs",
+        "title": "Kiro Tutorial: Open Kiro Documentation"
+      },
+      {
+        "command": "kiro-tutorial.cloneSpiritRepo",
+        "title": "Kiro Tutorial: Clone Spirit of Kiro Repository"
+      },
+      {
+        "command": "kiro-tutorial.checkDocker",
+        "title": "Kiro Tutorial: Check Docker Installation"
+      },
+      {
+        "command": "kiro-tutorial.checkAWS",
+        "title": "Kiro Tutorial: Check AWS Credentials"
+      },
+      {
+        "command": "kiro-tutorial.checkGit",
+        "title": "Kiro Tutorial: Check Git Installation"
+      },
+      {
+        "command": "kiro-tutorial.checkNodeJS",
+        "title": "Kiro Tutorial: Check Node.js Installation"
+      },
+      {
+        "command": "kiro-tutorial.openSpiritLesson1",
+        "title": "Kiro Tutorial: Open Spirit Lesson 1 - Setup"
+      },
+      {
+        "command": "kiro-tutorial.openSpiritLesson2",
+        "title": "Kiro Tutorial: Open Spirit Lesson 2 - Homepage"
+      },
+      {
+        "command": "kiro-tutorial.openSpiritLesson3",
+        "title": "Kiro Tutorial: Open Spirit Lesson 3 - Physics Bug"
+      },
+      {
+        "command": "kiro-tutorial.openSpiritLesson4",
+        "title": "Kiro Tutorial: Open Spirit Lesson 4 - Interactions Bug"
+      },
+      {
+        "command": "kiro-tutorial.openSpiritLesson5",
+        "title": "Kiro Tutorial: Open Spirit Lesson 5 - Refactoring"
+      },
+      {
+        "command": "kiro-tutorial.openSpiritLesson6",
+        "title": "Kiro Tutorial: Open Spirit Lesson 6 - Email Verification"
+      },
+      {
+        "command": "kiro-tutorial.openSpiritLesson7",
+        "title": "Kiro Tutorial: Open Spirit Lesson 7 - Agent Hooks"
+      },
+      {
+        "command": "kiro-tutorial.openSpiritLesson8",
+        "title": "Kiro Tutorial: Open Spirit Lesson 8 - MCP Extension"
+      },
+      {
+        "command": "kiro-tutorial.openSpiritLesson9",
+        "title": "Kiro Tutorial: Open Spirit Lesson 9 - Conclusion"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^9.0.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.80.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^8.47.0",
+    "glob": "^13.0.0",
+    "mocha": "^11.7.5",
+    "typescript": "^5.1.6"
+  }
+}
