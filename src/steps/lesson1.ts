@@ -6,6 +6,10 @@ import { TutorialStep } from '../types';
 import { StepGeneratorContext } from './types';
 
 export function getLesson1Setup(ctx: StepGeneratorContext): TutorialStep {
+    // Use HTTPS URL for broader compatibility (works without SSH keys)
+    const gitCloneUrl = 'https://github.com/kirodotdev/spirit-of-kiro.git';
+    const cloneCommand = `git clone ${gitCloneUrl} && cd spirit-of-kiro && git checkout challenge`;
+
     return {
         title: 'Lesson 1: Setup Dev Environment',
         content: `
@@ -17,13 +21,13 @@ export function getLesson1Setup(ctx: StepGeneratorContext): TutorialStep {
                 <p>Clone the Spirit of Kiro repository and switch to the <code>challenge</code> branch:</p>
 
                 <div class="code-block-container">
-                    <div class="code-block">git clone git@github.com:kirodotdev/spirit-of-kiro.git
+                    <div class="code-block">git clone ${gitCloneUrl}
 cd spirit-of-kiro/
 git checkout challenge</div>
-                    <button class="copy-btn" onclick="copyToClipboard('git clone git@github.com:kirodotdev/spirit-of-kiro.git && cd spirit-of-kiro/ && git checkout challenge')">Copy</button>
+                    <button class="copy-btn" onclick="copyToClipboard('${cloneCommand}')">Copy</button>
                 </div>
 
-                <button class="action-btn terminal" onclick="runTerminalCommand('git clone git@github.com:kirodotdev/spirit-of-kiro.git && cd spirit-of-kiro && git checkout challenge')">
+                <button class="action-btn terminal" onclick="runTerminalCommand('${cloneCommand}')">
                     <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
                     Run in Terminal
                 </button>
@@ -54,7 +58,7 @@ git checkout challenge</div>
                     <strong>First time?</strong> Run: <code>podman machine init && podman machine start</code>
                 </div>
 
-                <button class="action-btn terminal" onclick="runTerminalCommand('[[ \\"$(basename $PWD)\\" != \\"spirit-of-kiro\\" ]] && cd spirit-of-kiro; AWS_PROFILE=${ctx.awsProfile} ./scripts/check-dependencies.sh')">
+                <button class="action-btn terminal" onclick="runTerminalCommand('${ctx.buildCdIfNotInDir('spirit-of-kiro', ctx.buildEnvVarPrefix({ AWS_PROFILE: ctx.awsProfile }, './scripts/check-dependencies.sh'))}')">
                     <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
                     Run Full Dependency Check
                 </button>
@@ -64,11 +68,11 @@ git checkout challenge</div>
                 <p>Deploy the AWS Cognito user pool for authentication:</p>
 
                 <div class="code-block-container">
-                    <div class="code-block">AWS_PROFILE=${ctx.awsProfile} AWS_REGION=${ctx.awsRegion} ./scripts/deploy-cognito.sh game-auth</div>
-                    <button class="copy-btn" onclick="copyToClipboard('AWS_PROFILE=${ctx.awsProfile} AWS_REGION=${ctx.awsRegion} ./scripts/deploy-cognito.sh game-auth')">Copy</button>
+                    <div class="code-block">${ctx.buildEnvVarPrefix({ AWS_PROFILE: ctx.awsProfile, AWS_REGION: ctx.awsRegion }, './scripts/deploy-cognito.sh game-auth')}</div>
+                    <button class="copy-btn" onclick="copyToClipboard('${ctx.buildEnvVarPrefix({ AWS_PROFILE: ctx.awsProfile, AWS_REGION: ctx.awsRegion }, './scripts/deploy-cognito.sh game-auth')}')">Copy</button>
                 </div>
 
-                <button class="action-btn terminal" onclick="runTerminalCommand('[[ \\"$(basename $PWD)\\" != \\"spirit-of-kiro\\" ]] && cd spirit-of-kiro; AWS_PROFILE=${ctx.awsProfile} AWS_REGION=${ctx.awsRegion} ./scripts/deploy-cognito.sh game-auth')">
+                <button class="action-btn terminal" onclick="runTerminalCommand('${ctx.buildCdIfNotInDir('spirit-of-kiro', ctx.buildEnvVarPrefix({ AWS_PROFILE: ctx.awsProfile, AWS_REGION: ctx.awsRegion }, './scripts/deploy-cognito.sh game-auth'))}')">
                     <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
                     Deploy Cognito Stack
                 </button>
@@ -82,7 +86,7 @@ git checkout challenge</div>
                 <p style="margin-top: 16px;"><strong>Disable Email Verification</strong> (for local development):</p>
                 <p style="font-size: 12px; color: var(--vscode-descriptionForeground);">Run this after deployment to allow sign-up without email confirmation:</p>
 
-                <button class="action-btn terminal" onclick="runTerminalCommand('[[ \\"$(basename $PWD)\\" != \\"spirit-of-kiro\\" ]] && cd spirit-of-kiro; source dev.env && AWS_PROFILE=${ctx.awsProfile} aws cognito-idp update-user-pool --user-pool-id $COGNITO_USER_POOL_ID --region ${ctx.awsRegion} --auto-verified-attributes email')">
+                <button class="action-btn terminal" onclick="runTerminalCommand('${ctx.buildCdIfNotInDir('spirit-of-kiro', ctx.buildSourceEnvCommand('dev.env', ctx.buildEnvVarPrefix({ AWS_PROFILE: ctx.awsProfile }, 'aws cognito-idp update-user-pool --user-pool-id $COGNITO_USER_POOL_ID --region ' + ctx.awsRegion + ' --auto-verified-attributes email')))}')">
                     <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
                     Disable Email Verification
                 </button>
@@ -96,7 +100,7 @@ git checkout challenge</div>
                     <button class="copy-btn" onclick="copyToClipboard('${ctx.containerRuntime} compose build && ${ctx.containerRuntime} compose up --watch --remove-orphans --timeout 0 --force-recreate')">Copy</button>
                 </div>
 
-                <button class="action-btn terminal" onclick="runTerminalCommand('[[ \\"$(basename $PWD)\\" != \\"spirit-of-kiro\\" ]] && cd spirit-of-kiro; ${ctx.containerRuntime} compose build && ${ctx.containerRuntime} compose up --watch --remove-orphans --timeout 0 --force-recreate')">
+                <button class="action-btn terminal" onclick="runTerminalCommand('${ctx.buildCdIfNotInDir('spirit-of-kiro', ctx.containerRuntime + ' compose build && ' + ctx.containerRuntime + ' compose up --watch --remove-orphans --timeout 0 --force-recreate')}')">
                     <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
                     Build & Start Containers
                 </button>

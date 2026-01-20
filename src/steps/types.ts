@@ -3,6 +3,7 @@
  */
 
 import { TutorialStep } from '../types';
+import { Platform } from '../platform';
 
 /** Context for generating step content with dynamic helpers */
 export interface StepGeneratorContext {
@@ -39,6 +40,24 @@ export interface StepGeneratorContext {
 
     /** Container runtime */
     containerRuntime: 'podman' | 'docker';
+
+    /** Current platform (windows, macos, linux) */
+    platform: Platform;
+
+    /** Check if running on Windows */
+    isWindows: boolean;
+
+    /** Check if running on a Unix-like system (macOS or Linux) */
+    isUnix: boolean;
+
+    /** Build a command that changes to directory if not already in it */
+    buildCdIfNotInDir: (targetDir: string, nextCommand: string) => string;
+
+    /** Build a command to source environment variables from a file */
+    buildSourceEnvCommand: (envFile: string, nextCommand: string) => string;
+
+    /** Build environment variable prefix for a command */
+    buildEnvVarPrefix: (vars: Record<string, string>, command: string) => string;
 }
 
 /** Step generator function type */
