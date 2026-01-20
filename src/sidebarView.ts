@@ -293,7 +293,7 @@ export class TutorialViewProvider implements vscode.WebviewViewProvider {
                     break;
                 case 'navigateToStep':
                     // Navigate to a specific step (used by interactive timeline)
-                    if (data.step >= 0 && data.step <= 21) {
+                    if (data.step >= 0 && data.step <= 24) {
                         this._currentStep = data.step;
                         this._updateView();
                     }

@@ -19,8 +19,11 @@ import { getFeature11Checkpointing } from './feature11';
 import { getFeature12PropertyTesting } from './feature12';
 import { getFeature13AutonomousAgent } from './feature13';
 import { getFeature14Subagents } from './feature14';
-import { getFeature15PlanAgent } from './feature15';
+import { getFeature15ContextualHooks } from './feature15';
 import { getFeature16WebTools } from './feature16';
+import { getFeature17SupervisedMode } from './feature17';
+import { getFeature18CodeIntelligence } from './feature18';
+import { getFeature19Compaction } from './feature19';
 
 /**
  * Get all tutorial steps
@@ -42,8 +45,11 @@ export function getAllSteps(ctx: StepGeneratorContext): TutorialStep[] {
         getFeature12PropertyTesting(ctx),
         getFeature13AutonomousAgent(ctx),
         getFeature14Subagents(ctx),
-        getFeature15PlanAgent(ctx),
-        getFeature16WebTools(ctx)
+        getFeature15ContextualHooks(ctx),
+        getFeature16WebTools(ctx),
+        getFeature17SupervisedMode(ctx),
+        getFeature18CodeIntelligence(ctx),
+        getFeature19Compaction(ctx)
     ];
 }
 

@@ -9,9 +9,15 @@ export function getFeature16WebTools(ctx: StepGeneratorContext): TutorialStep {
     return {
         title: 'Feature: Web Tools',
         content: `
-            ${ctx.getEnhancedLessonBadge(7, 7, 'Web Tools - Research Capabilities')}
+            ${ctx.getEnhancedLessonBadge(7, 10, 'Web Tools - Research Capabilities')}
 
             <p>Web Tools bring real-time internet access to Kiro, enabling web searches and URL fetching for documentation, research, and staying current with rapidly changing technologies.</p>
+
+            <div class="video-container" style="margin: 16px 0; border-radius: 8px; overflow: hidden;">
+                <video autoplay loop muted playsinline style="width: 100%; border-radius: 8px;">
+                    <source src="https://kiro.dev/videos/webtools.mp4" type="video/mp4">
+                </video>
+            </div>
 
             ${ctx.getCollapsibleSection('f16-intro', 1, 'What are Web Tools?', `
                 <div class="info-box">

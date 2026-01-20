@@ -9,9 +9,15 @@ export function getFeature14Subagents(ctx: StepGeneratorContext): TutorialStep {
     return {
         title: 'Feature: Subagents',
         content: `
-            ${ctx.getEnhancedLessonBadge(5, 7, 'Subagents - Parallel Task Delegation')}
+            ${ctx.getEnhancedLessonBadge(5, 10, 'Subagents - Parallel Task Delegation')}
 
             <p>Subagents let you delegate complex tasks to specialized workers that run autonomously with their own context, enabling parallel execution of multiple workstreams.</p>
+
+            <div class="video-container" style="margin: 16px 0; border-radius: 8px; overflow: hidden;">
+                <video autoplay loop muted playsinline style="width: 100%; border-radius: 8px;">
+                    <source src="https://kiro.dev/videos/subagents.mp4" type="video/mp4">
+                </video>
+            </div>
 
             ${ctx.getCollapsibleSection('f14-intro', 1, 'What are Subagents?', `
                 <div class="info-box">

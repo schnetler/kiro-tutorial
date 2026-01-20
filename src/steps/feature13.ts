@@ -9,7 +9,7 @@ export function getFeature13AutonomousAgent(ctx: StepGeneratorContext): Tutorial
     return {
         title: 'Feature: Autonomous Agent',
         content: `
-            ${ctx.getEnhancedLessonBadge(4, 7, 'Autonomous Agent - Persistent AI Teammate')}
+            ${ctx.getEnhancedLessonBadge(4, 10, 'Autonomous Agent - Persistent AI Teammate')}
 
             <p>The Kiro autonomous agent maintains context across sessions, learns from feedback, and executes complex tasks asynchronously across multiple repositories.</p>
 

@@ -9,7 +9,7 @@ export function getFeature11Checkpointing(ctx: StepGeneratorContext): TutorialSt
     return {
         title: 'Feature: Checkpointing',
         content: `
-            ${ctx.getEnhancedLessonBadge(2, 7, 'Checkpointing - Time Travel for Your Code')}
+            ${ctx.getEnhancedLessonBadge(2, 10, 'Checkpointing - Time Travel for Your Code')}
 
             <p>Roll back to any previous agent state without losing progress or re-spending credits. Checkpointing gives you a safety net for bold experimentation.</p>
 

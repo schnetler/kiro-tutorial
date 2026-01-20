@@ -9,7 +9,7 @@ export function getFeature10Powers(ctx: StepGeneratorContext): TutorialStep {
     return {
         title: 'Feature: Kiro Powers',
         content: `
-            ${ctx.getEnhancedLessonBadge(1, 7, 'Kiro Powers - Dynamic Tool Loading')}
+            ${ctx.getEnhancedLessonBadge(1, 10, 'Kiro Powers - Dynamic Tool Loading')}
 
             <p>Powers give Kiro instant expertise for any technology by dynamically loading tools, workflows, and best practices on-demand.</p>
 

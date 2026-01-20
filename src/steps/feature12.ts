@@ -9,7 +9,7 @@ export function getFeature12PropertyTesting(ctx: StepGeneratorContext): Tutorial
     return {
         title: 'Feature: Property-Based Testing',
         content: `
-            ${ctx.getEnhancedLessonBadge(3, 7, 'Property-Based Testing - Verify Your Specs')}
+            ${ctx.getEnhancedLessonBadge(3, 10, 'Property-Based Testing - Verify Your Specs')}
 
             <p>Property-based testing (PBT) generates hundreds of random test cases to find edge cases and verify your code matches your specifications.</p>
 
