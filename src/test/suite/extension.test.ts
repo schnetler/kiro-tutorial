@@ -1,6 +1,7 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { TutorialViewProvider } from '../../sidebarView';
+import { isWindows, isUnix } from '../../platform';
 
 suite('Kiro Tutorial Extension Test Suite', () => {
     vscode.window.showInformationMessage('Starting Kiro Tutorial tests.');
@@ -155,13 +156,15 @@ suite('Lesson 1 Command Generation Tests', () => {
     suite('Clone Command', () => {
         test('Clone command should be exact', () => {
             const commands = provider.generateLesson1Commands();
-            const expectedCloneCmd = 'git clone git@github.com:kirodotdev/spirit-of-kiro.git && cd spirit-of-kiro && git checkout challenge';
+            // Use HTTPS URL for broader compatibility (works without SSH keys)
+            const expectedCloneCmd = 'git clone https://github.com/kirodotdev/spirit-of-kiro.git && cd spirit-of-kiro && git checkout challenge';
             assert.strictEqual(commands.clone, expectedCloneCmd, 'Clone command must match exactly');
         });
 
-        test('Clone command should include SSH URL', () => {
+        test('Clone command should include HTTPS URL', () => {
             const commands = provider.generateLesson1Commands();
-            assert.ok(commands.clone.includes('git@github.com:kirodotdev/spirit-of-kiro.git'), 'Must use SSH URL');
+            // HTTPS URLs work on all platforms without SSH key configuration
+            assert.ok(commands.clone.includes('https://github.com/kirodotdev/spirit-of-kiro.git'), 'Must use HTTPS URL for cross-platform compatibility');
         });
 
         test('Clone command should checkout challenge branch', () => {
@@ -173,71 +176,123 @@ suite('Lesson 1 Command Generation Tests', () => {
     suite('Dependency Check Command', () => {
         test('Should include default AWS profile', () => {
             const commands = provider.generateLesson1Commands();
-            assert.strictEqual(
-                commands.dependencyCheck,
-                'AWS_PROFILE=default ./scripts/check-dependencies.sh',
-                'Dependency check should use default profile'
-            );
+            // Command format depends on platform (Unix vs Windows)
+            if (isUnix()) {
+                assert.strictEqual(
+                    commands.dependencyCheck,
+                    'AWS_PROFILE=default ./scripts/check-dependencies.sh',
+                    'Dependency check should use default profile (Unix)'
+                );
+            } else {
+                assert.ok(
+                    commands.dependencyCheck.includes("$env:AWS_PROFILE='default'"),
+                    'Dependency check should use default profile (Windows)'
+                );
+            }
         });
 
         test('Should use custom AWS profile when set', () => {
             provider.setAwsProfileForTest('my-profile');
             const commands = provider.generateLesson1Commands();
-            assert.strictEqual(
-                commands.dependencyCheck,
-                'AWS_PROFILE=my-profile ./scripts/check-dependencies.sh',
-                'Dependency check should use custom profile'
-            );
+            if (isUnix()) {
+                assert.strictEqual(
+                    commands.dependencyCheck,
+                    'AWS_PROFILE=my-profile ./scripts/check-dependencies.sh',
+                    'Dependency check should use custom profile (Unix)'
+                );
+            } else {
+                assert.ok(
+                    commands.dependencyCheck.includes("$env:AWS_PROFILE='my-profile'"),
+                    'Dependency check should use custom profile (Windows)'
+                );
+            }
         });
     });
 
     suite('Deploy Cognito Command', () => {
         test('Should include default AWS profile and region', () => {
             const commands = provider.generateLesson1Commands();
-            assert.strictEqual(
-                commands.deployCognito,
-                'AWS_PROFILE=default AWS_REGION=us-east-1 ./scripts/deploy-cognito.sh game-auth',
-                'Deploy Cognito should use default profile and region'
-            );
+            if (isUnix()) {
+                assert.strictEqual(
+                    commands.deployCognito,
+                    'AWS_PROFILE=default AWS_REGION=us-east-1 ./scripts/deploy-cognito.sh game-auth',
+                    'Deploy Cognito should use default profile and region (Unix)'
+                );
+            } else {
+                assert.ok(
+                    commands.deployCognito.includes("$env:AWS_PROFILE='default'") &&
+                    commands.deployCognito.includes("$env:AWS_REGION='us-east-1'"),
+                    'Deploy Cognito should use default profile and region (Windows)'
+                );
+            }
         });
 
         test('Should use custom AWS profile when set', () => {
             provider.setAwsProfileForTest('production');
             const commands = provider.generateLesson1Commands();
-            assert.ok(
-                commands.deployCognito.includes('AWS_PROFILE=production'),
-                'Deploy should use custom profile'
-            );
+            if (isUnix()) {
+                assert.ok(
+                    commands.deployCognito.includes('AWS_PROFILE=production'),
+                    'Deploy should use custom profile (Unix)'
+                );
+            } else {
+                assert.ok(
+                    commands.deployCognito.includes("$env:AWS_PROFILE='production'"),
+                    'Deploy should use custom profile (Windows)'
+                );
+            }
         });
 
         test('Should use custom AWS region when set', () => {
             provider.setAwsRegionForTest('eu-central-1');
             const commands = provider.generateLesson1Commands();
-            assert.ok(
-                commands.deployCognito.includes('AWS_REGION=eu-central-1'),
-                'Deploy should use custom region'
-            );
+            if (isUnix()) {
+                assert.ok(
+                    commands.deployCognito.includes('AWS_REGION=eu-central-1'),
+                    'Deploy should use custom region (Unix)'
+                );
+            } else {
+                assert.ok(
+                    commands.deployCognito.includes("$env:AWS_REGION='eu-central-1'"),
+                    'Deploy should use custom region (Windows)'
+                );
+            }
         });
 
         test('Should use both custom profile and region', () => {
             provider.setAwsProfileForTest('staging');
             provider.setAwsRegionForTest('ap-northeast-1');
             const commands = provider.generateLesson1Commands();
-            assert.strictEqual(
-                commands.deployCognito,
-                'AWS_PROFILE=staging AWS_REGION=ap-northeast-1 ./scripts/deploy-cognito.sh game-auth',
-                'Deploy should use both custom profile and region'
-            );
+            if (isUnix()) {
+                assert.strictEqual(
+                    commands.deployCognito,
+                    'AWS_PROFILE=staging AWS_REGION=ap-northeast-1 ./scripts/deploy-cognito.sh game-auth',
+                    'Deploy should use both custom profile and region (Unix)'
+                );
+            } else {
+                assert.ok(
+                    commands.deployCognito.includes("$env:AWS_PROFILE='staging'") &&
+                    commands.deployCognito.includes("$env:AWS_REGION='ap-northeast-1'"),
+                    'Deploy should use both custom profile and region (Windows)'
+                );
+            }
         });
     });
 
     suite('Disable Email Verification Command', () => {
-        test('Should source dev.env file', () => {
+        test('Should load dev.env file (platform-specific)', () => {
             const commands = provider.generateLesson1Commands();
-            assert.ok(
-                commands.disableEmailVerification.startsWith('source dev.env'),
-                'Must source dev.env file'
-            );
+            if (isUnix()) {
+                assert.ok(
+                    commands.disableEmailVerification.startsWith('source dev.env'),
+                    'Must source dev.env file (Unix)'
+                );
+            } else {
+                assert.ok(
+                    commands.disableEmailVerification.includes("Get-Content 'dev.env'"),
+                    'Must load dev.env file (Windows)'
+                );
+            }
         });
 
         test('Should use cognito-idp update-user-pool', () => {
@@ -259,10 +314,17 @@ suite('Lesson 1 Command Generation Tests', () => {
         test('Should use profile from state', () => {
             provider.setAwsProfileForTest('custom-profile');
             const commands = provider.generateLesson1Commands();
-            assert.ok(
-                commands.disableEmailVerification.includes('AWS_PROFILE=custom-profile'),
-                'Must use custom profile'
-            );
+            if (isUnix()) {
+                assert.ok(
+                    commands.disableEmailVerification.includes('AWS_PROFILE=custom-profile'),
+                    'Must use custom profile (Unix)'
+                );
+            } else {
+                assert.ok(
+                    commands.disableEmailVerification.includes("$env:AWS_PROFILE='custom-profile'"),
+                    'Must use custom profile (Windows)'
+                );
+            }
         });
 
         test('Should use region from state', () => {
@@ -274,15 +336,24 @@ suite('Lesson 1 Command Generation Tests', () => {
             );
         });
 
-        test('Should have exact format', () => {
+        test('Should have exact format (platform-specific)', () => {
             provider.setAwsProfileForTest('default');
             provider.setAwsRegionForTest('us-east-1');
             const commands = provider.generateLesson1Commands();
-            assert.strictEqual(
-                commands.disableEmailVerification,
-                'source dev.env && AWS_PROFILE=default aws cognito-idp update-user-pool --user-pool-id $COGNITO_USER_POOL_ID --region us-east-1 --auto-verified-attributes email',
-                'Disable email verification command must match exactly'
-            );
+            if (isUnix()) {
+                assert.strictEqual(
+                    commands.disableEmailVerification,
+                    'source dev.env && AWS_PROFILE=default aws cognito-idp update-user-pool --user-pool-id $COGNITO_USER_POOL_ID --region us-east-1 --auto-verified-attributes email',
+                    'Disable email verification command must match exactly (Unix)'
+                );
+            } else {
+                // On Windows, the command uses PowerShell syntax
+                assert.ok(
+                    commands.disableEmailVerification.includes("Get-Content 'dev.env'") &&
+                    commands.disableEmailVerification.includes('aws cognito-idp update-user-pool'),
+                    'Disable email verification command must use PowerShell syntax (Windows)'
+                );
+            }
         });
     });
 
@@ -575,7 +646,8 @@ suite('URL and Clipboard Tests', () => {
     });
 
     test('Should be able to copy command to clipboard', async () => {
-        const command = 'git clone git@github.com:kirodotdev/spirit-of-kiro.git';
+        // Use HTTPS URL for broader compatibility
+        const command = 'git clone https://github.com/kirodotdev/spirit-of-kiro.git';
         await vscode.env.clipboard.writeText(command);
         const result = await vscode.env.clipboard.readText();
         assert.strictEqual(result, command, 'Command should be copied to clipboard');

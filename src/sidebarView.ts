@@ -10,6 +10,14 @@ import {
     getCodeBlockWithCopy
 } from './helpers';
 import { getAllSteps, StepGeneratorContext } from './steps';
+import {
+    getPlatform,
+    isWindows,
+    isUnix,
+    buildCdIfNotInDir,
+    buildSourceEnvCommand,
+    buildEnvVarPrefix
+} from './platform';
 
 export class TutorialViewProvider implements vscode.WebviewViewProvider {
     public static readonly viewType = 'kiro-tutorial.sidebarView';
@@ -68,6 +76,7 @@ export class TutorialViewProvider implements vscode.WebviewViewProvider {
     /**
      * Generate all Lesson 1 commands based on current state (for testing)
      * Returns the exact commands that would be executed
+     * Commands are platform-aware and will differ on Windows vs Unix
      */
     public generateLesson1Commands(): {
         clone: string;
@@ -78,11 +87,14 @@ export class TutorialViewProvider implements vscode.WebviewViewProvider {
         bootstrapDatabase: string;
         testServer: string;
     } {
+        // Use HTTPS URL for broader compatibility (works without SSH keys)
+        const gitUrl = 'https://github.com/kirodotdev/spirit-of-kiro.git';
+
         return {
-            clone: 'git clone git@github.com:kirodotdev/spirit-of-kiro.git && cd spirit-of-kiro && git checkout challenge',
-            dependencyCheck: `AWS_PROFILE=${this._awsProfile} ./scripts/check-dependencies.sh`,
-            deployCognito: `AWS_PROFILE=${this._awsProfile} AWS_REGION=${this._awsRegion} ./scripts/deploy-cognito.sh game-auth`,
-            disableEmailVerification: `source dev.env && AWS_PROFILE=${this._awsProfile} aws cognito-idp update-user-pool --user-pool-id $COGNITO_USER_POOL_ID --region ${this._awsRegion} --auto-verified-attributes email`,
+            clone: `git clone ${gitUrl} && cd spirit-of-kiro && git checkout challenge`,
+            dependencyCheck: buildEnvVarPrefix({ AWS_PROFILE: this._awsProfile }, './scripts/check-dependencies.sh'),
+            deployCognito: buildEnvVarPrefix({ AWS_PROFILE: this._awsProfile, AWS_REGION: this._awsRegion }, './scripts/deploy-cognito.sh game-auth'),
+            disableEmailVerification: buildSourceEnvCommand('dev.env', buildEnvVarPrefix({ AWS_PROFILE: this._awsProfile }, `aws cognito-idp update-user-pool --user-pool-id $COGNITO_USER_POOL_ID --region ${this._awsRegion} --auto-verified-attributes email`)),
             buildAndLaunch: `${this._containerRuntime} compose build && ${this._containerRuntime} compose up --watch --remove-orphans --timeout 0 --force-recreate`,
             bootstrapDatabase: `cd spirit-of-kiro && ${this._containerRuntime} exec server mkdir -p /app/server/iac && ${this._containerRuntime} cp scripts/bootstrap-local-dynamodb.js server:/app/ && ${this._containerRuntime} cp server/iac/dynamodb.yml server:/app/server/iac/ && ${this._containerRuntime} exec server bun run /app/bootstrap-local-dynamodb.js`,
             testServer: 'curl localhost:8080'
@@ -404,7 +416,13 @@ export class TutorialViewProvider implements vscode.WebviewViewProvider {
             getCodeBlockWithCopy: (code) => getCodeBlockWithCopy(code),
             awsProfile: this._awsProfile,
             awsRegion: this._awsRegion,
-            containerRuntime: this._containerRuntime
+            containerRuntime: this._containerRuntime,
+            platform: getPlatform(),
+            isWindows: isWindows(),
+            isUnix: isUnix(),
+            buildCdIfNotInDir: buildCdIfNotInDir,
+            buildSourceEnvCommand: buildSourceEnvCommand,
+            buildEnvVarPrefix: buildEnvVarPrefix
         };
     }
 
