@@ -4,6 +4,9 @@
 
 import { HelperState } from '../types';
 
+// Re-export platform helpers
+export * from './platform';
+
 /**
  * Generate a collapsible section
  */

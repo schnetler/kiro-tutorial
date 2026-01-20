@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { getStyles } from './styles';
-import { HelperState } from './types';
+import { HelperState, OsPlatform } from './types';
 import {
     getCollapsibleSection,
     getEnhancedLessonBadge,
@@ -24,15 +24,32 @@ export class TutorialViewProvider implements vscode.WebviewViewProvider {
     private _awsProfile: string = 'default'; // AWS profile name
     private _awsRegion: string = 'us-east-1'; // AWS region
     private _containerRuntime: 'podman' | 'docker' = 'podman'; // Which container runtime to use
+    private _osPlatform: OsPlatform; // Operating system platform
     private _terminal?: vscode.Terminal; // Reusable terminal
     private _fileWatcher?: vscode.FileSystemWatcher;
 
     constructor(private readonly _extensionUri: vscode.Uri) {
+        // Detect operating system platform
+        this._osPlatform = this._detectOsPlatform();
+
         // Watch for spec file changes
         this._fileWatcher = vscode.workspace.createFileSystemWatcher('**/.kiro/**/*.md');
         this._fileWatcher.onDidCreate(() => this._updateView());
         this._fileWatcher.onDidChange(() => this._updateView());
         this._fileWatcher.onDidDelete(() => this._updateView());
+    }
+
+    /** Detect the operating system platform */
+    private _detectOsPlatform(): OsPlatform {
+        const platform = process.platform;
+        switch (platform) {
+            case 'win32':
+                return 'windows';
+            case 'darwin':
+                return 'macos';
+            default:
+                return 'linux';
+        }
     }
 
     public dispose() {
@@ -53,6 +70,9 @@ export class TutorialViewProvider implements vscode.WebviewViewProvider {
     /** Get the current container runtime (for testing) */
     public get containerRuntime(): 'podman' | 'docker' { return this._containerRuntime; }
 
+    /** Get the current OS platform (for testing) */
+    public get osPlatform(): OsPlatform { return this._osPlatform; }
+
     /** Get validation results (for testing) */
     public get validationResults(): Map<string, boolean | null> { return new Map(this._validationResults); }
 
@@ -65,9 +85,13 @@ export class TutorialViewProvider implements vscode.WebviewViewProvider {
     /** Set container runtime (for testing) */
     public setContainerRuntimeForTest(runtime: 'podman' | 'docker'): void { this._containerRuntime = runtime; }
 
+    /** Set OS platform (for testing) */
+    public setOsPlatformForTest(platform: OsPlatform): void { this._osPlatform = platform; }
+
     /**
      * Generate all Lesson 1 commands based on current state (for testing)
      * Returns the exact commands that would be executed
+     * Commands are platform-aware based on the detected OS
      */
     public generateLesson1Commands(): {
         clone: string;
@@ -78,14 +102,29 @@ export class TutorialViewProvider implements vscode.WebviewViewProvider {
         bootstrapDatabase: string;
         testServer: string;
     } {
+        const isUnix = this._osPlatform === 'macos' || this._osPlatform === 'linux';
+
+        if (isUnix) {
+            return {
+                clone: 'git clone git@github.com:kirodotdev/spirit-of-kiro.git && cd spirit-of-kiro && git checkout challenge',
+                dependencyCheck: `AWS_PROFILE=${this._awsProfile} ./scripts/check-dependencies.sh`,
+                deployCognito: `AWS_PROFILE=${this._awsProfile} AWS_REGION=${this._awsRegion} ./scripts/deploy-cognito.sh game-auth`,
+                disableEmailVerification: `source dev.env && AWS_PROFILE=${this._awsProfile} aws cognito-idp update-user-pool --user-pool-id $COGNITO_USER_POOL_ID --region ${this._awsRegion} --auto-verified-attributes email`,
+                buildAndLaunch: `${this._containerRuntime} compose build && ${this._containerRuntime} compose up --watch --remove-orphans --timeout 0 --force-recreate`,
+                bootstrapDatabase: `cd spirit-of-kiro && ${this._containerRuntime} exec server mkdir -p /app/server/iac && ${this._containerRuntime} cp scripts/bootstrap-local-dynamodb.js server:/app/ && ${this._containerRuntime} cp server/iac/dynamodb.yml server:/app/server/iac/ && ${this._containerRuntime} exec server bun run /app/bootstrap-local-dynamodb.js`,
+                testServer: 'curl localhost:8080'
+            };
+        }
+
+        // Windows (PowerShell) commands
         return {
             clone: 'git clone git@github.com:kirodotdev/spirit-of-kiro.git && cd spirit-of-kiro && git checkout challenge',
-            dependencyCheck: `AWS_PROFILE=${this._awsProfile} ./scripts/check-dependencies.sh`,
-            deployCognito: `AWS_PROFILE=${this._awsProfile} AWS_REGION=${this._awsRegion} ./scripts/deploy-cognito.sh game-auth`,
-            disableEmailVerification: `source dev.env && AWS_PROFILE=${this._awsProfile} aws cognito-idp update-user-pool --user-pool-id $COGNITO_USER_POOL_ID --region ${this._awsRegion} --auto-verified-attributes email`,
+            dependencyCheck: `$env:AWS_PROFILE='${this._awsProfile}'; ./scripts/check-dependencies.sh`,
+            deployCognito: `$env:AWS_PROFILE='${this._awsProfile}'; $env:AWS_REGION='${this._awsRegion}'; ./scripts/deploy-cognito.sh game-auth`,
+            disableEmailVerification: `Get-Content dev.env | ForEach-Object { if ($_ -match '^([^=]+)=(.*)$') { Set-Item "env:$($Matches[1])" $Matches[2] } }; $env:AWS_PROFILE='${this._awsProfile}'; aws cognito-idp update-user-pool --user-pool-id $env:COGNITO_USER_POOL_ID --region ${this._awsRegion} --auto-verified-attributes email`,
             buildAndLaunch: `${this._containerRuntime} compose build && ${this._containerRuntime} compose up --watch --remove-orphans --timeout 0 --force-recreate`,
-            bootstrapDatabase: `cd spirit-of-kiro && ${this._containerRuntime} exec server mkdir -p /app/server/iac && ${this._containerRuntime} cp scripts/bootstrap-local-dynamodb.js server:/app/ && ${this._containerRuntime} cp server/iac/dynamodb.yml server:/app/server/iac/ && ${this._containerRuntime} exec server bun run /app/bootstrap-local-dynamodb.js`,
-            testServer: 'curl localhost:8080'
+            bootstrapDatabase: `Set-Location spirit-of-kiro; ${this._containerRuntime} exec server mkdir -p /app/server/iac && ${this._containerRuntime} cp scripts/bootstrap-local-dynamodb.js server:/app/ && ${this._containerRuntime} cp server/iac/dynamodb.yml server:/app/server/iac/ && ${this._containerRuntime} exec server bun run /app/bootstrap-local-dynamodb.js`,
+            testServer: 'curl.exe localhost:8080'
         };
     }
 
@@ -385,7 +424,8 @@ export class TutorialViewProvider implements vscode.WebviewViewProvider {
             validationInProgress: this._validationInProgress,
             awsProfile: this._awsProfile,
             awsRegion: this._awsRegion,
-            containerRuntime: this._containerRuntime
+            containerRuntime: this._containerRuntime,
+            osPlatform: this._osPlatform
         };
     }
 
@@ -404,7 +444,8 @@ export class TutorialViewProvider implements vscode.WebviewViewProvider {
             getCodeBlockWithCopy: (code) => getCodeBlockWithCopy(code),
             awsProfile: this._awsProfile,
             awsRegion: this._awsRegion,
-            containerRuntime: this._containerRuntime
+            containerRuntime: this._containerRuntime,
+            osPlatform: this._osPlatform
         };
     }
 

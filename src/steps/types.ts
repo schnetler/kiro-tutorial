@@ -2,7 +2,7 @@
  * Types for step generation
  */
 
-import { TutorialStep } from '../types';
+import { TutorialStep, OsPlatform } from '../types';
 
 /** Context for generating step content with dynamic helpers */
 export interface StepGeneratorContext {
@@ -39,6 +39,9 @@ export interface StepGeneratorContext {
 
     /** Container runtime */
     containerRuntime: 'podman' | 'docker';
+
+    /** Operating system platform */
+    osPlatform: OsPlatform;
 }
 
 /** Step generator function type */

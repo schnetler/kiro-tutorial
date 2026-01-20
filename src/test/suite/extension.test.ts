@@ -84,6 +84,20 @@ suite('TutorialViewProvider Unit Tests', () => {
             assert.strictEqual(provider.containerRuntime, 'podman', 'Default container runtime should be "podman"');
         });
 
+        test('Should have detected OS platform', () => {
+            const platform = provider.osPlatform;
+            assert.ok(
+                platform === 'windows' || platform === 'macos' || platform === 'linux',
+                'OS platform should be one of: windows, macos, linux'
+            );
+        });
+
+        test('Should detect correct OS platform based on process.platform', () => {
+            const expected = process.platform === 'win32' ? 'windows' :
+                            process.platform === 'darwin' ? 'macos' : 'linux';
+            assert.strictEqual(provider.osPlatform, expected, 'OS platform should match process.platform');
+        });
+
         test('Should have empty validation results initially', () => {
             const results = provider.validationResults;
             assert.strictEqual(results.size, 0, 'Validation results should be empty initially');
@@ -110,6 +124,22 @@ suite('TutorialViewProvider Unit Tests', () => {
             assert.strictEqual(provider.containerRuntime, 'docker', 'Container runtime should be updated');
             // Reset
             provider.setContainerRuntimeForTest('podman');
+        });
+
+        test('setOsPlatformForTest should update platform', () => {
+            const originalPlatform = provider.osPlatform;
+
+            provider.setOsPlatformForTest('windows');
+            assert.strictEqual(provider.osPlatform, 'windows', 'OS platform should be updated to windows');
+
+            provider.setOsPlatformForTest('macos');
+            assert.strictEqual(provider.osPlatform, 'macos', 'OS platform should be updated to macos');
+
+            provider.setOsPlatformForTest('linux');
+            assert.strictEqual(provider.osPlatform, 'linux', 'OS platform should be updated to linux');
+
+            // Reset to original
+            provider.setOsPlatformForTest(originalPlatform);
         });
     });
 
@@ -170,13 +200,17 @@ suite('Lesson 1 Command Generation Tests', () => {
         });
     });
 
-    suite('Dependency Check Command', () => {
-        test('Should include default AWS profile', () => {
+    suite('Dependency Check Command (Unix)', () => {
+        setup(() => {
+            provider.setOsPlatformForTest('macos');
+        });
+
+        test('Should include default AWS profile with Unix syntax', () => {
             const commands = provider.generateLesson1Commands();
             assert.strictEqual(
                 commands.dependencyCheck,
                 'AWS_PROFILE=default ./scripts/check-dependencies.sh',
-                'Dependency check should use default profile'
+                'Dependency check should use Unix env var syntax'
             );
         });
 
@@ -191,13 +225,42 @@ suite('Lesson 1 Command Generation Tests', () => {
         });
     });
 
-    suite('Deploy Cognito Command', () => {
+    suite('Dependency Check Command (Windows)', () => {
+        setup(() => {
+            provider.setOsPlatformForTest('windows');
+        });
+
+        test('Should include default AWS profile with PowerShell syntax', () => {
+            const commands = provider.generateLesson1Commands();
+            assert.strictEqual(
+                commands.dependencyCheck,
+                "$env:AWS_PROFILE='default'; ./scripts/check-dependencies.sh",
+                'Dependency check should use PowerShell env var syntax'
+            );
+        });
+
+        test('Should use custom AWS profile when set', () => {
+            provider.setAwsProfileForTest('my-profile');
+            const commands = provider.generateLesson1Commands();
+            assert.strictEqual(
+                commands.dependencyCheck,
+                "$env:AWS_PROFILE='my-profile'; ./scripts/check-dependencies.sh",
+                'Dependency check should use custom profile with PowerShell syntax'
+            );
+        });
+    });
+
+    suite('Deploy Cognito Command (Unix)', () => {
+        setup(() => {
+            provider.setOsPlatformForTest('linux');
+        });
+
         test('Should include default AWS profile and region', () => {
             const commands = provider.generateLesson1Commands();
             assert.strictEqual(
                 commands.deployCognito,
                 'AWS_PROFILE=default AWS_REGION=us-east-1 ./scripts/deploy-cognito.sh game-auth',
-                'Deploy Cognito should use default profile and region'
+                'Deploy Cognito should use Unix syntax'
             );
         });
 
@@ -218,20 +281,37 @@ suite('Lesson 1 Command Generation Tests', () => {
                 'Deploy should use custom region'
             );
         });
+    });
 
-        test('Should use both custom profile and region', () => {
-            provider.setAwsProfileForTest('staging');
-            provider.setAwsRegionForTest('ap-northeast-1');
+    suite('Deploy Cognito Command (Windows)', () => {
+        setup(() => {
+            provider.setOsPlatformForTest('windows');
+        });
+
+        test('Should include default AWS profile and region with PowerShell syntax', () => {
             const commands = provider.generateLesson1Commands();
             assert.strictEqual(
                 commands.deployCognito,
-                'AWS_PROFILE=staging AWS_REGION=ap-northeast-1 ./scripts/deploy-cognito.sh game-auth',
-                'Deploy should use both custom profile and region'
+                "$env:AWS_PROFILE='default'; $env:AWS_REGION='us-east-1'; ./scripts/deploy-cognito.sh game-auth",
+                'Deploy Cognito should use PowerShell syntax'
+            );
+        });
+
+        test('Should use custom AWS profile when set', () => {
+            provider.setAwsProfileForTest('production');
+            const commands = provider.generateLesson1Commands();
+            assert.ok(
+                commands.deployCognito.includes("$env:AWS_PROFILE='production'"),
+                'Deploy should use custom profile with PowerShell syntax'
             );
         });
     });
 
-    suite('Disable Email Verification Command', () => {
+    suite('Disable Email Verification Command (Unix)', () => {
+        setup(() => {
+            provider.setOsPlatformForTest('macos');
+        });
+
         test('Should source dev.env file', () => {
             const commands = provider.generateLesson1Commands();
             assert.ok(
@@ -282,6 +362,36 @@ suite('Lesson 1 Command Generation Tests', () => {
                 commands.disableEmailVerification,
                 'source dev.env && AWS_PROFILE=default aws cognito-idp update-user-pool --user-pool-id $COGNITO_USER_POOL_ID --region us-east-1 --auto-verified-attributes email',
                 'Disable email verification command must match exactly'
+            );
+        });
+    });
+
+    suite('Disable Email Verification Command (Windows)', () => {
+        setup(() => {
+            provider.setOsPlatformForTest('windows');
+        });
+
+        test('Should use Get-Content for env file on Windows', () => {
+            const commands = provider.generateLesson1Commands();
+            assert.ok(
+                commands.disableEmailVerification.includes('Get-Content dev.env'),
+                'Must use Get-Content for env file on Windows'
+            );
+        });
+
+        test('Should use $env: syntax for env vars', () => {
+            const commands = provider.generateLesson1Commands();
+            assert.ok(
+                commands.disableEmailVerification.includes('$env:AWS_PROFILE'),
+                'Must use $env: syntax for AWS_PROFILE'
+            );
+        });
+
+        test('Should use $env:COGNITO_USER_POOL_ID', () => {
+            const commands = provider.generateLesson1Commands();
+            assert.ok(
+                commands.disableEmailVerification.includes('$env:COGNITO_USER_POOL_ID'),
+                'Must use $env:COGNITO_USER_POOL_ID'
             );
         });
     });
@@ -349,12 +459,16 @@ suite('Lesson 1 Command Generation Tests', () => {
         });
     });
 
-    suite('Bootstrap Database Command', () => {
+    suite('Bootstrap Database Command (Unix)', () => {
+        setup(() => {
+            provider.setOsPlatformForTest('linux');
+        });
+
         test('Should start with cd spirit-of-kiro', () => {
             const commands = provider.generateLesson1Commands();
             assert.ok(
                 commands.bootstrapDatabase.startsWith('cd spirit-of-kiro'),
-                'Bootstrap must start with cd spirit-of-kiro (opens in new terminal)'
+                'Bootstrap must start with cd spirit-of-kiro on Unix'
             );
         });
 
@@ -407,15 +521,146 @@ suite('Lesson 1 Command Generation Tests', () => {
         });
     });
 
-    suite('Test Server Command', () => {
+    suite('Bootstrap Database Command (Windows)', () => {
+        setup(() => {
+            provider.setOsPlatformForTest('windows');
+        });
+
+        test('Should start with Set-Location spirit-of-kiro on Windows', () => {
+            const commands = provider.generateLesson1Commands();
+            assert.ok(
+                commands.bootstrapDatabase.startsWith('Set-Location spirit-of-kiro'),
+                'Bootstrap must start with Set-Location spirit-of-kiro on Windows'
+            );
+        });
+    });
+
+    suite('Test Server Command (Unix)', () => {
+        setup(() => {
+            provider.setOsPlatformForTest('macos');
+        });
+
         test('Should curl localhost:8080', () => {
             const commands = provider.generateLesson1Commands();
             assert.strictEqual(
                 commands.testServer,
                 'curl localhost:8080',
-                'Test server command must be exact'
+                'Test server command must use curl on Unix'
             );
         });
+    });
+
+    suite('Test Server Command (Windows)', () => {
+        setup(() => {
+            provider.setOsPlatformForTest('windows');
+        });
+
+        test('Should use curl.exe localhost:8080 on Windows', () => {
+            const commands = provider.generateLesson1Commands();
+            assert.strictEqual(
+                commands.testServer,
+                'curl.exe localhost:8080',
+                'Test server command must use curl.exe on Windows'
+            );
+        });
+    });
+});
+
+suite('OS Platform Detection Tests', () => {
+    let provider: TutorialViewProvider;
+
+    setup(() => {
+        const mockUri = vscode.Uri.file('/mock/extension/path');
+        provider = new TutorialViewProvider(mockUri);
+    });
+
+    teardown(() => {
+        provider.dispose();
+    });
+
+    test('Commands should differ between Unix and Windows', () => {
+        // Test Unix commands
+        provider.setOsPlatformForTest('macos');
+        const unixCommands = provider.generateLesson1Commands();
+
+        // Test Windows commands
+        provider.setOsPlatformForTest('windows');
+        const windowsCommands = provider.generateLesson1Commands();
+
+        // Dependency check should differ
+        assert.notStrictEqual(
+            unixCommands.dependencyCheck,
+            windowsCommands.dependencyCheck,
+            'Dependency check commands should differ between platforms'
+        );
+
+        // Deploy Cognito should differ
+        assert.notStrictEqual(
+            unixCommands.deployCognito,
+            windowsCommands.deployCognito,
+            'Deploy Cognito commands should differ between platforms'
+        );
+
+        // Disable email should differ
+        assert.notStrictEqual(
+            unixCommands.disableEmailVerification,
+            windowsCommands.disableEmailVerification,
+            'Disable email verification commands should differ between platforms'
+        );
+
+        // Bootstrap should differ
+        assert.notStrictEqual(
+            unixCommands.bootstrapDatabase,
+            windowsCommands.bootstrapDatabase,
+            'Bootstrap database commands should differ between platforms'
+        );
+
+        // Test server should differ
+        assert.notStrictEqual(
+            unixCommands.testServer,
+            windowsCommands.testServer,
+            'Test server commands should differ between platforms'
+        );
+    });
+
+    test('macOS and Linux should have same commands', () => {
+        provider.setOsPlatformForTest('macos');
+        const macosCommands = provider.generateLesson1Commands();
+
+        provider.setOsPlatformForTest('linux');
+        const linuxCommands = provider.generateLesson1Commands();
+
+        assert.deepStrictEqual(
+            macosCommands,
+            linuxCommands,
+            'macOS and Linux commands should be identical'
+        );
+    });
+
+    test('Clone command should be same across all platforms', () => {
+        const platforms: Array<'windows' | 'macos' | 'linux'> = ['windows', 'macos', 'linux'];
+        const commands: string[] = [];
+
+        for (const platform of platforms) {
+            provider.setOsPlatformForTest(platform);
+            commands.push(provider.generateLesson1Commands().clone);
+        }
+
+        assert.strictEqual(commands[0], commands[1], 'Clone command should be same on Windows and macOS');
+        assert.strictEqual(commands[1], commands[2], 'Clone command should be same on macOS and Linux');
+    });
+
+    test('Build and launch command should be same across all platforms', () => {
+        const platforms: Array<'windows' | 'macos' | 'linux'> = ['windows', 'macos', 'linux'];
+        const commands: string[] = [];
+
+        for (const platform of platforms) {
+            provider.setOsPlatformForTest(platform);
+            commands.push(provider.generateLesson1Commands().buildAndLaunch);
+        }
+
+        assert.strictEqual(commands[0], commands[1], 'Build command should be same on Windows and macOS');
+        assert.strictEqual(commands[1], commands[2], 'Build command should be same on macOS and Linux');
     });
 });
 

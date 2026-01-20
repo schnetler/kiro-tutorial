@@ -4,14 +4,55 @@
 
 import { TutorialStep } from '../types';
 import { StepGeneratorContext } from './types';
+import {
+    isUnixLike,
+    getStopShortcut,
+    getCdIfNotInDir,
+    PlatformCommandContext
+} from '../helpers/platform';
 
 export function getLesson1Setup(ctx: StepGeneratorContext): TutorialStep {
+    // Create platform command context
+    const platformCtx: PlatformCommandContext = {
+        osPlatform: ctx.osPlatform,
+        containerRuntime: ctx.containerRuntime,
+        awsProfile: ctx.awsProfile,
+        awsRegion: ctx.awsRegion
+    };
+
+    // Platform-specific commands and shortcuts
+    const stopShortcut = getStopShortcut(ctx.osPlatform);
+    const cdToSpiritCmd = getCdIfNotInDir(ctx.osPlatform, 'spirit-of-kiro');
+
+    // Environment variable commands differ by platform
+    const dependencyCheckCmd = isUnixLike(ctx.osPlatform)
+        ? `AWS_PROFILE=${ctx.awsProfile} ./scripts/check-dependencies.sh`
+        : `$env:AWS_PROFILE='${ctx.awsProfile}'; ./scripts/check-dependencies.sh`;
+
+    const cognitoDeployCmd = isUnixLike(ctx.osPlatform)
+        ? `AWS_PROFILE=${ctx.awsProfile} AWS_REGION=${ctx.awsRegion} ./scripts/deploy-cognito.sh game-auth`
+        : `$env:AWS_PROFILE='${ctx.awsProfile}'; $env:AWS_REGION='${ctx.awsRegion}'; ./scripts/deploy-cognito.sh game-auth`;
+
+    const disableEmailCmd = isUnixLike(ctx.osPlatform)
+        ? `source dev.env && AWS_PROFILE=${ctx.awsProfile} aws cognito-idp update-user-pool --user-pool-id $COGNITO_USER_POOL_ID --region ${ctx.awsRegion} --auto-verified-attributes email`
+        : `Get-Content dev.env | ForEach-Object { if ($_ -match '^([^=]+)=(.*)$') { Set-Item "env:$($Matches[1])" $Matches[2] } }; $env:AWS_PROFILE='${ctx.awsProfile}'; aws cognito-idp update-user-pool --user-pool-id $env:COGNITO_USER_POOL_ID --region ${ctx.awsRegion} --auto-verified-attributes email`;
+
+    // Platform note for Windows users
+    const windowsNote = ctx.osPlatform === 'windows' ? `
+        <div class="tip-box">
+            <strong>Windows Users:</strong> These commands work best in PowerShell 7+ or Git Bash.
+            If using older PowerShell, some commands may need adjustment.
+        </div>
+    ` : '';
+
     return {
         title: 'Lesson 1: Setup Dev Environment',
         content: `
             ${ctx.getEnhancedLessonBadge(1, 9, 'Setup Dev Environment')}
 
             <p>Set up your development environment for Spirit of Kiro. Complete each section in order.</p>
+
+            ${windowsNote}
 
             ${ctx.getCollapsibleSection('l1-clone', 1, 'Clone the Repository', `
                 <p>Clone the Spirit of Kiro repository and switch to the <code>challenge</code> branch:</p>
@@ -54,7 +95,7 @@ git checkout challenge</div>
                     <strong>First time?</strong> Run: <code>podman machine init && podman machine start</code>
                 </div>
 
-                <button class="action-btn terminal" onclick="runTerminalCommand('[[ \\"$(basename $PWD)\\" != \\"spirit-of-kiro\\" ]] && cd spirit-of-kiro; AWS_PROFILE=${ctx.awsProfile} ./scripts/check-dependencies.sh')">
+                <button class="action-btn terminal" onclick="runTerminalCommand('${cdToSpiritCmd}; ${dependencyCheckCmd}')">
                     <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
                     Run Full Dependency Check
                 </button>
@@ -64,11 +105,11 @@ git checkout challenge</div>
                 <p>Deploy the AWS Cognito user pool for authentication:</p>
 
                 <div class="code-block-container">
-                    <div class="code-block">AWS_PROFILE=${ctx.awsProfile} AWS_REGION=${ctx.awsRegion} ./scripts/deploy-cognito.sh game-auth</div>
-                    <button class="copy-btn" onclick="copyToClipboard('AWS_PROFILE=${ctx.awsProfile} AWS_REGION=${ctx.awsRegion} ./scripts/deploy-cognito.sh game-auth')">Copy</button>
+                    <div class="code-block">${cognitoDeployCmd}</div>
+                    <button class="copy-btn" onclick="copyToClipboard('${cognitoDeployCmd.replace(/'/g, "\\'")}')">Copy</button>
                 </div>
 
-                <button class="action-btn terminal" onclick="runTerminalCommand('[[ \\"$(basename $PWD)\\" != \\"spirit-of-kiro\\" ]] && cd spirit-of-kiro; AWS_PROFILE=${ctx.awsProfile} AWS_REGION=${ctx.awsRegion} ./scripts/deploy-cognito.sh game-auth')">
+                <button class="action-btn terminal" onclick="runTerminalCommand('${cdToSpiritCmd}; ${cognitoDeployCmd.replace(/'/g, "\\'")}')">
                     <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
                     Deploy Cognito Stack
                 </button>
@@ -82,7 +123,7 @@ git checkout challenge</div>
                 <p style="margin-top: 16px;"><strong>Disable Email Verification</strong> (for local development):</p>
                 <p style="font-size: 12px; color: var(--vscode-descriptionForeground);">Run this after deployment to allow sign-up without email confirmation:</p>
 
-                <button class="action-btn terminal" onclick="runTerminalCommand('[[ \\"$(basename $PWD)\\" != \\"spirit-of-kiro\\" ]] && cd spirit-of-kiro; source dev.env && AWS_PROFILE=${ctx.awsProfile} aws cognito-idp update-user-pool --user-pool-id $COGNITO_USER_POOL_ID --region ${ctx.awsRegion} --auto-verified-attributes email')">
+                <button class="action-btn terminal" onclick="runTerminalCommand('${cdToSpiritCmd}; ${disableEmailCmd.replace(/'/g, "\\'")}')">
                     <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
                     Disable Email Verification
                 </button>
@@ -96,13 +137,13 @@ git checkout challenge</div>
                     <button class="copy-btn" onclick="copyToClipboard('${ctx.containerRuntime} compose build && ${ctx.containerRuntime} compose up --watch --remove-orphans --timeout 0 --force-recreate')">Copy</button>
                 </div>
 
-                <button class="action-btn terminal" onclick="runTerminalCommand('[[ \\"$(basename $PWD)\\" != \\"spirit-of-kiro\\" ]] && cd spirit-of-kiro; ${ctx.containerRuntime} compose build && ${ctx.containerRuntime} compose up --watch --remove-orphans --timeout 0 --force-recreate')">
+                <button class="action-btn terminal" onclick="runTerminalCommand('${cdToSpiritCmd}; ${ctx.containerRuntime} compose build && ${ctx.containerRuntime} compose up --watch --remove-orphans --timeout 0 --force-recreate')">
                     <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
                     Build & Start Containers
                 </button>
 
                 <div class="tip-box">
-                    <strong>Note:</strong> The first build may take a couple minutes. Use <code>Ctrl+C</code> / <code>Cmd+C</code> to stop.
+                    <strong>Note:</strong> The first build may take a couple minutes. Use <code>${stopShortcut}</code> to stop.
                 </div>
 
                 <img src="https://kiro.dev/images/video-game-guide/build-and-run.gif" alt="Build and run" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
@@ -119,7 +160,7 @@ ${ctx.containerRuntime} exec server bun run /app/bootstrap-local-dynamodb.js</di
                     <button class="copy-btn" onclick="copyToClipboard('${ctx.containerRuntime} exec server mkdir -p /app/server/iac && ${ctx.containerRuntime} cp scripts/bootstrap-local-dynamodb.js server:/app/ && ${ctx.containerRuntime} cp server/iac/dynamodb.yml server:/app/server/iac/ && ${ctx.containerRuntime} exec server bun run /app/bootstrap-local-dynamodb.js')">Copy</button>
                 </div>
 
-                <button class="action-btn terminal" onclick="runTerminalCommand('cd spirit-of-kiro && ${ctx.containerRuntime} exec server mkdir -p /app/server/iac && ${ctx.containerRuntime} cp scripts/bootstrap-local-dynamodb.js server:/app/ && ${ctx.containerRuntime} cp server/iac/dynamodb.yml server:/app/server/iac/ && ${ctx.containerRuntime} exec server bun run /app/bootstrap-local-dynamodb.js', true)">
+                <button class="action-btn terminal" onclick="runTerminalCommand('${isUnixLike(ctx.osPlatform) ? 'cd spirit-of-kiro &&' : 'Set-Location spirit-of-kiro;'} ${ctx.containerRuntime} exec server mkdir -p /app/server/iac && ${ctx.containerRuntime} cp scripts/bootstrap-local-dynamodb.js server:/app/ && ${ctx.containerRuntime} cp server/iac/dynamodb.yml server:/app/server/iac/ && ${ctx.containerRuntime} exec server bun run /app/bootstrap-local-dynamodb.js', true)">
                     <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
                     Bootstrap Database (New Terminal)
                 </button>
@@ -134,7 +175,7 @@ ${ctx.containerRuntime} exec server bun run /app/bootstrap-local-dynamodb.js</di
             ${ctx.getCollapsibleSection('l1-test', 6, 'Test It Out!', `
                 <p>Verify the server is running and open the game:</p>
 
-                <button class="action-btn terminal" onclick="runTerminalCommand('curl localhost:8080')">
+                <button class="action-btn terminal" onclick="runTerminalCommand('${isUnixLike(ctx.osPlatform) ? 'curl' : 'curl.exe'} localhost:8080')">
                     <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
                     Test Server (expect "OK")
                 </button>
