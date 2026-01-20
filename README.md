@@ -41,16 +41,33 @@ Level up with the official Kiro tutorial
 - **Hands-on learning** - Code alongside the tutorial
 - **Compare approaches** - Experience Vibe vs Spec firsthand
 
-### 📚 9 Tutorial Steps
+### 📚 25 Tutorial Steps
+
+**Basics (Steps 1-6)**
 1. **Welcome to Kiro** - Introduction to Vibe vs Spec modes
 2. **Part 1: Vibe Mode** - Build todo app quickly
 3. **Part 2: Spec Mode** - Build same app with planning
 4. **Vibe vs Spec: Compare** - Understand the trade-offs
 5. **Part 3: Spirit of Kiro** - Introduction to the game
-6. **Spirit: Steering & Homepage** - Lessons 1-2
-7. **Spirit: Debugging & Refactoring** - Lessons 3-5
-8. **Spirit: Email & Hooks** - Lessons 6-7
-9. **Spirit: MCP & Next Steps** - Lessons 8-9
+6. **Spirit: Prerequisites** - Setup for advanced lessons
+
+**Advanced (Steps 7-15)**
+7. **Spirit: Steering & Homepage** - Lessons 1-2
+8. **Spirit: Debugging & Refactoring** - Lessons 3-5
+9. **Spirit: Email & Hooks** - Lessons 6-7
+10. **Spirit: MCP & Next Steps** - Lessons 8-9
+
+**Features (Steps 16-25)** - New Kiro IDE capabilities
+11. **Kiro Powers** - Dynamic MCP tool loading with on-demand activation
+12. **Checkpointing** - Roll back to any previous agent state
+13. **Property-Based Testing** - Verify specs with random test generation
+14. **Autonomous Agent** - Persistent context and multi-repo support
+15. **Subagents** - Parallel task delegation with live tracking
+16. **Contextual Hooks** - Automate workflows with Prompt Submit and Agent Stop triggers
+17. **Web Tools** - Web search and URL fetching for research
+18. **Supervised Mode** - Per-file review and selective code approval
+19. **Code Intelligence** - Symbol search, /code overview, 18 languages built-in
+20. **Conversation Compaction** - Manage long sessions with /compact
 
 ### 🚀 Smart Session Launching
 - **One-click Vibe sessions** - Opens Kiro chat with todo app prompt
