@@ -44,7 +44,12 @@ export interface HelperState {
     awsRegion: string;
     /** Container runtime */
     containerRuntime: 'podman' | 'docker';
+    /** Operating system platform */
+    osPlatform: OsPlatform;
 }
+
+/** Operating system platform type */
+export type OsPlatform = 'windows' | 'macos' | 'linux';
 
 /** Context for generating step content */
 export interface StepContext {
