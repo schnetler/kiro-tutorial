@@ -336,12 +336,16 @@ export function getLesson9Conclusion(ctx: StepGeneratorContext): TutorialStep {
             `)}
 
             <div style="text-align: center; padding: 20px 0; margin-top: 16px; border-top: 1px solid var(--kiro-border-subtle);">
-                <p style="font-size: 12px; color: var(--vscode-descriptionForeground); margin-bottom: 12px;">
-                    Thank you for learning with Kiro!
+                <p style="font-size: 14px; color: var(--vscode-foreground); margin-bottom: 16px; font-weight: 500;">
+                    Ready to unlock Kiro's full potential?
                 </p>
-                <p style="font-size: 11px; color: var(--vscode-descriptionForeground); opacity: 0.7;">
-                    Built with 💜 by the Kiro team
+                <p style="font-size: 12px; color: var(--vscode-descriptionForeground); margin-bottom: 16px; line-height: 1.5;">
+                    Explore advanced capabilities like <strong>Powers</strong>, <strong>Checkpointing</strong>, <strong>Autonomous Agent</strong>, <strong>Subagents</strong>, <strong>Web Tools</strong>, and more.
                 </p>
+                <button class="action-btn browser" onclick="openUrl('https://kiro.dev/docs/features')" style="margin: 0 auto;">
+                    <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Discover All Features
+                </button>
             </div>
         `,
         actions: []
