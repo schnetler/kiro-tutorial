@@ -88,6 +88,8 @@ export function getLesson5Refactoring(ctx: StepGeneratorContext): TutorialStep {
                 <div class="tip-box">
                     <strong>AI Advantage:</strong> AI can scan entire codebases instantly and spot patterns that would take humans hours to find manually.
                 </div>
+
+                <img src="https://kiro.dev/images/video-game-guide/refactor.png" alt="Refactoring process" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
             `)}
 
             ${ctx.getCollapsibleSection('l5-extract', 3, 'Extract Common Logic', `
@@ -120,6 +122,8 @@ if (isValidItem(item, 'stone')) { ... }</div>
                 <div class="warning-box">
                     <strong>Review carefully:</strong> AI sometimes over-abstracts. Reject changes that add complexity without clear benefit. Simple duplication is sometimes better than a complex abstraction.
                 </div>
+
+                <img src="https://kiro.dev/images/video-game-guide/refactor-results.png" alt="Refactoring results" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
             `)}
 
             ${ctx.getCollapsibleSection('l5-verify', 4, 'Verify & Test', `

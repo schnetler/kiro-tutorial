@@ -82,6 +82,8 @@ export function getLesson4Interactions(ctx: StepGeneratorContext): TutorialStep 
                     <span style="color: var(--kiro-success);">Expected:</span> Wood + Stone = Tool<br>
                     <span style="color: #f85149;">Actual:</span> Nothing happens, or wrong item produced
                 </div>
+
+                <img src="https://kiro.dev/images/video-game-guide/interactions-bug.gif" alt="Interactions bug demonstration" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
             `)}
 
             ${ctx.getCollapsibleSection('l4-investigate', 3, 'Investigate with Kiro', `

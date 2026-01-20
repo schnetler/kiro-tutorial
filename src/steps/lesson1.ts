@@ -58,6 +58,8 @@ git checkout challenge</div>
                     <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
                     Run Full Dependency Check
                 </button>
+
+                <img src="https://kiro.dev/images/video-game-guide/check-dependencies.gif" alt="Check dependencies" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
             `)}
 
             ${ctx.getCollapsibleSection('l1-cognito', 3, 'Deploy Cognito', `

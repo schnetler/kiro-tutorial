@@ -131,6 +131,10 @@ export function getLesson7Hooks(ctx: StepGeneratorContext): TutorialStep {
                 <div class="tip-box" style="margin-top: 12px;">
                     <strong>Start small:</strong> Begin with one or two high-impact hooks. Add more as you identify additional automation opportunities.
                 </div>
+
+                <img src="https://kiro.dev/images/video-game-guide/create-hook.png" alt="Creating a hook" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
+
+                <img src="https://kiro.dev/images/video-game-guide/asset-create.png" alt="Asset creation hook" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
             `)}
 
             ${ctx.getCollapsibleSection('l7-test', 4, 'Test Automated Workflows', `
@@ -153,6 +157,10 @@ export function getLesson7Hooks(ctx: StepGeneratorContext): TutorialStep {
                     <svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
                     Open Hooks Configuration
                 </button>
+
+                <img src="https://kiro.dev/images/video-game-guide/hook-run-create.png" alt="Hook running on file create" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
+
+                <img src="https://kiro.dev/images/video-game-guide/hook-run-delete.png" alt="Hook running on file delete" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
 
                 <div class="tip-box" style="margin-top: 16px; background: var(--kiro-success-light); border-color: var(--kiro-success);">
                     <strong>Key Learning:</strong> Hooks eliminate repetitive explanations and automate common workflows. They make AI-assisted development more efficient by reducing manual intervention.
