@@ -293,7 +293,7 @@ export class TutorialViewProvider implements vscode.WebviewViewProvider {
                     break;
                 case 'navigateToStep':
                     // Navigate to a specific step (used by interactive timeline)
-                    if (data.step >= 0 && data.step <= 15) {
+                    if (data.step >= 0 && data.step <= 21) {
                         this._currentStep = data.step;
                         this._updateView();
                     }
@@ -501,12 +501,24 @@ export class TutorialViewProvider implements vscode.WebviewViewProvider {
             <div class="steps-section">
                 <div class="section-label">Advanced</div>
                 <div class="steps-nav">
-                    ${steps.slice(6).map((step, index) => `
+                    ${steps.slice(6, 15).map((step, index) => `
                         <button
                             class="step-dot ${index + 6 === this._currentStep ? 'active' : ''} ${this._completedSteps.has(index + 6) ? 'completed' : ''}"
                             onclick="gotoStep(${index + 6})"
                             title="${step.title}"
                         >${this._completedSteps.has(index + 6) ? '' : index + 1}</button>
+                    `).join('')}
+                </div>
+            </div>
+            <div class="steps-section">
+                <div class="section-label">Features</div>
+                <div class="steps-nav">
+                    ${steps.slice(15).map((step, index) => `
+                        <button
+                            class="step-dot ${index + 15 === this._currentStep ? 'active' : ''} ${this._completedSteps.has(index + 15) ? 'completed' : ''}"
+                            onclick="gotoStep(${index + 15})"
+                            title="${step.title}"
+                        >${this._completedSteps.has(index + 15) ? '' : index + 1}</button>
                     `).join('')}
                 </div>
             </div>
