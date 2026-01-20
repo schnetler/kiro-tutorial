@@ -16,6 +16,8 @@ export function getLesson3Physics(ctx: StepGeneratorContext): TutorialStep {
             ${ctx.getCollapsibleSection('l3-bug', 1, 'The Physics Bug', `
                 <p>There's a subtle bug in the game physics: when you switch browser tabs and come back, the physics simulation becomes unstable.</p>
 
+                <img src="https://kiro.dev/images/video-game-guide/physics-bug.gif" alt="Physics bug demonstration" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
+
                 <div class="warning-box">
                     <strong>Prerequisite:</strong> Game must be running from Lesson 1, with steering files from Lesson 2.
                 </div>

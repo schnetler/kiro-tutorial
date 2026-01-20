@@ -43,12 +43,16 @@ export function getLesson2Homepage(ctx: StepGeneratorContext): TutorialStep {
                     Open Command Palette (Cmd/Ctrl+Shift+P)
                 </button>
 
+                <img src="https://kiro.dev/images/video-game-guide/setup-steering.png" alt="Setup steering" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
+
                 <p style="margin-top: 12px;">This creates files in <code>.kiro/</code>:</p>
                 <ul>
                     <li><strong>product.md</strong> - Project description</li>
                     <li><strong>tech.md</strong> - Technology stack</li>
                     <li><strong>structure.md</strong> - Folder organization</li>
                 </ul>
+
+                <img src="https://kiro.dev/images/video-game-guide/steering-run.png" alt="Steering generation" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
             `)}
 
             ${ctx.getCollapsibleSection('l2-improve', 3, 'Improve the Homepage', `

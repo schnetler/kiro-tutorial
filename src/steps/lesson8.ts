@@ -18,6 +18,8 @@ export function getLesson8MCP(ctx: StepGeneratorContext): TutorialStep {
                     <strong>Model Context Protocol (MCP)</strong> is an open standard for connecting AI assistants to external tools and data sources. It lets you extend Kiro with custom capabilities.
                 </div>
 
+                <img src="https://kiro.dev/images/video-game-guide/mcp-basics.png" alt="MCP basics" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
+
                 <h4>MCP Enables</h4>
                 <div class="journey-container">
                     <div class="journey-card">
@@ -119,6 +121,8 @@ export function getLesson8MCP(ctx: StepGeneratorContext): TutorialStep {
                 <div class="tip-box">
                     <strong>MCP servers</strong> are simple processes that expose tools via JSON-RPC. They can be written in any language, but TypeScript has the best SDK support.
                 </div>
+
+                <img src="https://kiro.dev/images/video-game-guide/memory-behavior.png" alt="Memory behavior example" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
             `)}
 
             ${ctx.getCollapsibleSection('l8-integrate', 4, 'Integrate & Test', `
@@ -147,6 +151,8 @@ and show their current inventory"</div>
                     <svg viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></svg>
                     Read MCP Documentation
                 </button>
+
+                <img src="https://kiro.dev/images/video-game-guide/steering-mcp.png" alt="Steering MCP integration" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
 
                 <div class="tip-box" style="margin-top: 16px; background: var(--kiro-success-light); border-color: var(--kiro-success);">
                     <strong>Key Learning:</strong> MCP extends Kiro's capabilities beyond chat. Custom tools make AI assistance more powerful for your specific workflow and can be shared across your team.

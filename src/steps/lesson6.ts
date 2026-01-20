@@ -82,6 +82,8 @@ export function getLesson6Features(ctx: StepGeneratorContext): TutorialStep {
                 <div class="tip-box">
                     <strong>Review carefully:</strong> Add any edge cases Kiro might have missed. The spec is your blueprint.
                 </div>
+
+                <img src="https://kiro.dev/images/video-game-guide/requirements.png" alt="Requirements specification" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
             `)}
 
             ${ctx.getCollapsibleSection('l6-design', 3, 'Create Design', `
@@ -112,6 +114,8 @@ GET  /auth/status        - Check verification status
                 <div class="tip-box">
                     <strong>Architecture decisions:</strong> This is your chance to shape how the feature is built. Review and modify before proceeding.
                 </div>
+
+                <img src="https://kiro.dev/images/video-game-guide/design.png" alt="Design specification" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
             `)}
 
             ${ctx.getCollapsibleSection('l6-implement', 4, 'Implement & Test', `
@@ -149,6 +153,10 @@ GET  /auth/status        - Check verification status
                     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                     Test in Game
                 </button>
+
+                <img src="https://kiro.dev/images/video-game-guide/tasks.png" alt="Tasks specification" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
+
+                <img src="https://kiro.dev/images/video-game-guide/task-work.png" alt="Working on a task" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
 
                 <div class="tip-box" style="margin-top: 16px; background: var(--kiro-success-light); border-color: var(--kiro-success);">
                     <strong>Key Learning:</strong> Spec-driven development shines for complex, multi-component features. The upfront planning makes implementation smoother and reduces rework.
