@@ -98,6 +98,8 @@ export function getLesson7Hooks(ctx: StepGeneratorContext): TutorialStep {
             ${ctx.getCollapsibleSection('l7-configure', 3, 'Create hooks.json', `
                 <p>Create a hooks configuration file in your project:</p>
 
+                <img src="https://kiro.dev/images/video-game-guide/create-hook.png" alt="Creating a new hook" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
+
                 <div class="code-block-container">
                     <div class="code-block"># File: .kiro/hooks.json
 {
@@ -128,6 +130,8 @@ export function getLesson7Hooks(ctx: StepGeneratorContext): TutorialStep {
                     </div>
                 </button>
 
+                <img src="https://kiro.dev/images/video-game-guide/asset-create.png" alt="Asset indexer hook configuration" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
+
                 <div class="tip-box" style="margin-top: 12px;">
                     <strong>Start small:</strong> Begin with one or two high-impact hooks. Add more as you identify additional automation opportunities.
                 </div>
@@ -148,6 +152,10 @@ export function getLesson7Hooks(ctx: StepGeneratorContext): TutorialStep {
                     <strong>Step 3:</strong> Verify the result
                     <p>Confirm the expected action was performed (file optimized, lint ran, etc.).</p>
                 </div>
+
+                <img src="https://kiro.dev/images/video-game-guide/hook-run-create.png" alt="Hook executing on file creation" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
+
+                <img src="https://kiro.dev/images/video-game-guide/hook-run-delete.png" alt="Hook executing on file deletion" style="width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid var(--vscode-widget-border);">
 
                 <button class="action-btn" onclick="executeCommand('kiro-tutorial.openHooksFile', false, 0)">
                     <svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
