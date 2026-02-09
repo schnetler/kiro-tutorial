@@ -2,8 +2,13 @@
   "name": "kiro-tutorial",
   "displayName": "Kiro Tutorial",
   "description": "Interactive tutorial for learning Kiro's spec-driven development features",
-  "version": "0.0.1",
-  "publisher": "kiro",
+  "version": "0.0.4",
+  "publisher": "kiro-tutorial",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/schnetler/kiro-tutorial"
+  },
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -211,9 +216,11 @@
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "@typescript-eslint/parser": "^6.4.1",
     "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.7.1",
     "eslint": "^8.47.0",
     "glob": "^13.0.0",
     "mocha": "^11.7.5",
+    "ovsx": "^0.10.9",
     "typescript": "^5.1.6"
   }
 }

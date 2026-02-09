@@ -397,7 +397,8 @@ export class TutorialViewProvider implements vscode.WebviewViewProvider {
             validationInProgress: this._validationInProgress,
             awsProfile: this._awsProfile,
             awsRegion: this._awsRegion,
-            containerRuntime: this._containerRuntime
+            containerRuntime: this._containerRuntime,
+            osPlatform: getPlatform()
         };
     }
 

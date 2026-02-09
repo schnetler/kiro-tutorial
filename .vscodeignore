@@ -3,7 +3,13 @@
 src/**
 .gitignore
 .yarnrc
+.claude/**
+.prompts/**
 vsc-extension-quickstart.md
+DESIGN_SPEC.md
+KIRO_COMMANDS.md
+KIRO_INTEGRATION.md
+QUICKSTART.md
 **/tsconfig.json
 **/.eslintrc.json
 **/*.map
