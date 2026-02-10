@@ -3,7 +3,7 @@
 ## 🚀 Launch It
 
 ```bash
-cd /Users/anwschne/work/kiro/kiro-tutorial
+cd kiro-tutorial
 code .
 # Press F5
 ```
